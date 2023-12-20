@@ -1,8 +1,20 @@
 {
     "pt": {
-        "button": "botão"
+        "next": "Próximo",
+        "back": "Voltar",
+        "dayButton": "Modo Claro",
+        "nightButton": "Modo Escuro",
+        "language": "Idioma",
+        "portuguese": "Português",
+        "english": "Inglês"
     },
     "en": {
-        "button": "button"
+        "next": "Next",
+        "back": "Back",
+        "dayButton": "Light Mode",
+        "nightButton": "Dark Mode",
+        "language": "Language",
+        "portuguese": "Portuguese",
+        "english": "English"
     }
 }

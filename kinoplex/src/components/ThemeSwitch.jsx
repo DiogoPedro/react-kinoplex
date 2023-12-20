@@ -56,6 +56,7 @@ export default function ThemeSwitch() {
 
   const dispatch = useDispatch();
   const theme = useSelector(state => state.theme);
+  const language = useSelector(state => state.language);
 
   function themeSwitched(event) {
     if(event.target.checked) {
@@ -68,7 +69,7 @@ export default function ThemeSwitch() {
   return (
     <FormControlLabel
       control={<MaterialUISwitch sx={{ m: 1 }} checked={theme.selectedTheme === "dark"} onChange={themeSwitched}/>}
-      label="MUI switch"
+      label={theme.selectedTheme === "dark" ? language.labels.nightButton : language.labels.dayButton }
     />
   );
 }

@@ -1,45 +1,34 @@
-import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import axiosHttpClient from '../../libs/axios/AxiosHttpClient';
+import { useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
-import PageMovie from '../../Entity/PageMovie';
+import styled from 'styled-components';
+import LinearProgress from '@mui/material/LinearProgress';
+import Box from '@mui/material/Box';
+
 import Carousel from './Carousel';
 import MovieSection from './MovieSection';
-import styled from 'styled-components';
 import Header from '../../Components/Header';
 
-export default function HomePage() {
+export default function HomePage({loadingMovies, loadingMoviesProgress}) {
 
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
   const theme = useSelector(state => state.theme);
-  const language = useSelector(state => state.language);
-
-  const [data, setData] = useState(new PageMovie());
+  const movie = useSelector(state => state.movie);
 
   const [top10Movies, setTop10Movies] = useState();
   const [moviesByGenre, setMoviesByGenre] = useState();
 
-  useEffect(() => {
-    axiosHttpClient.get("/3/discover/movie").then(data=>setData(new PageMovie(data)));
+  useEffect(()=> {
+      setTop10Movies(getTop10Movies(movie.movies));
+      setMoviesByGenre(divideByGenre(movie.movies));
   }, []);
 
-  useEffect(()=> {
-    if(data && data.results) {
-      setTop10Movies(getTop10Movies(data.results));
-      setMoviesByGenre(divideByGenre(data.results));
-    }
-  }, [data]);
-
   function getTop10Movies(unsortedMovies) {
-    let movies = [];
-
-    movies = unsortedMovies.sort((a, b) => b.popularity - a.popularity);
+    let movies = [...unsortedMovies];
+    
+    movies.sort((a, b) => b.popularity - a.popularity);
 
     let sizeElement = movies.length >= 10 ? 10 : movies.length;
     movies = movies.slice(0, sizeElement);
     
-    console.log(movies);
     return movies;
   }
 
@@ -49,7 +38,8 @@ export default function HomePage() {
     unsortedMovies.forEach( movie => {
       movie.genre_ids.forEach(genreId=>{
         if(movies[genreId]){
-          movies[genreId].push(movie);
+          if(movies[genreId].length < 10)
+            movies[genreId].push(movie);
         } 
         else
         {
@@ -64,19 +54,29 @@ export default function HomePage() {
   return (
     <HomePageContainer $light={theme.selectedTheme==="light"}>
       <Header/>
-      { top10Movies && <Carousel movieList={top10Movies}/> }
-      { moviesByGenre && Object.keys(moviesByGenre)?.map(key => <MovieSection key={key} genreId={key} movies={moviesByGenre[key]}/>) } 
+      {loadingMovies?
+        <Box sx={{ display: 'flex', width: '35%', minHeight: '100vh', justifyContent: 'center', alignItems: 'center'}}>
+          <Box sx={{width: '100%' }}>
+            <LinearProgress variant="determinate" value={loadingMoviesProgress}/>
+          </Box>
+        </Box>
+        :
+        <div>
+          { top10Movies && <Carousel movieList={top10Movies}/> }
+          { moviesByGenre && Object.keys(moviesByGenre)?.map(key => <MovieSection key={key} genreId={key} movies={moviesByGenre[key]}/>) } 
+        </div>
+      }
     </HomePageContainer>
   );
 }
 
 const HomePageContainer = styled.div`
   width: 100%;
+  min-height: 100vh;
   background: ${props => props.$light ? "#FFFFFF" : "#000000"};
   color: ${props => props.$light ? "#000000" : "#FFFFFF"};
-  padding: 4px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
 `;

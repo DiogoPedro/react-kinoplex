@@ -15,6 +15,7 @@ const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
 function Carousel({movieList}) {
   const theme = useSelector(state => state.theme);
+  const language = useSelector(state => state.language);
 
   const [activeStep, setActiveStep] = React.useState(0);
 
@@ -35,7 +36,7 @@ function Carousel({movieList}) {
   if(movieList)
   {
     return (
-      <Box sx={{ maxWidth: 720, flexGrow: 1, width: "16vw", heigth: 'auto'}}>
+      <Box sx={{ maxWidth: 720, flexGrow: 1, width: "50vw", heigth: 'auto'}}>
         <Paper
           square
           elevation={0}
@@ -56,7 +57,7 @@ function Carousel({movieList}) {
           enableMouseEvents
         >
           {movieList.map((movie, index) => (
-            <div key={movie.title}>
+            <div key={index}>
               {Math.abs(activeStep - index) <= 2 ? (
                 <Box
                   component="img"
@@ -65,12 +66,12 @@ function Carousel({movieList}) {
                     display: 'block',
                     maxWidth: 720,
                     overflow: 'hidden',
-                    width: '16vw',
-                    aspectRatio: '9/16',
+                    width: '50vw',
+                    aspectRatio: '16/9',
                     objectFit: 'contain'
                   }}
-                  src={movie.poster_path}
-                  alt={movie.title}
+                  src={movie.backdrop_path}
+                  alt={movie?.title?movie.title:""}
                 />
               ) : null}
             </div>
@@ -86,14 +87,14 @@ function Carousel({movieList}) {
               onClick={handleNext}
               disabled={activeStep === maxSteps - 1}
             >
-              Next
+              {language.labels.next}
               <KeyboardArrowRight />
             </Button>
           }
           backButton={
             <Button size="small" onClick={handleBack} disabled={activeStep === 0}>
               <KeyboardArrowLeft />
-              Back
+              {language.labels.back}
             </Button>
           }
           sx={{background: 'transparent'}}
