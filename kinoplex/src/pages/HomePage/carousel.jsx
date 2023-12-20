@@ -9,12 +9,15 @@ import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import SwipeableViews from 'react-swipeable-views';
 import { autoPlay } from 'react-swipeable-views-utils';
+import { useSelector } from 'react-redux';
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
 function Carousel({movieList}) {
-  const theme = useTheme();
+  const theme = useSelector(state => state.theme);
+
   const [activeStep, setActiveStep] = React.useState(0);
+
   const maxSteps = movieList?.length;
 
   const handleNext = () => {
@@ -32,7 +35,7 @@ function Carousel({movieList}) {
   if(movieList)
   {
     return (
-      <Box sx={{ maxWidth: 400, flexGrow: 1 }}>
+      <Box sx={{ maxWidth: 720, flexGrow: 1, width: "16vw", heigth: 'auto'}}>
         <Paper
           square
           elevation={0}
@@ -40,14 +43,14 @@ function Carousel({movieList}) {
             display: 'flex',
             alignItems: 'center',
             height: 50,
-            pl: 2,
-            bgcolor: 'background.default',
+            bgcolor: 'transparent',
+            justifyContent: 'center'
           }}
         >
-          <Typography>{movieList[activeStep].title}</Typography>
+          <Typography sx={{textAlign: 'center', fontWeight: 600, color: theme.selectedTheme === "light"? '#000000': '#FFFFFF'}}>{movieList[activeStep].title}</Typography>
         </Paper>
         <AutoPlaySwipeableViews
-          axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+          axis='x'
           index={activeStep}
           onChangeIndex={handleStepChange}
           enableMouseEvents
@@ -58,11 +61,13 @@ function Carousel({movieList}) {
                 <Box
                   component="img"
                   sx={{
-                    height: 255,
+                    height: 'auto',
                     display: 'block',
-                    maxWidth: 400,
+                    maxWidth: 720,
                     overflow: 'hidden',
-                    width: '100%',
+                    width: '16vw',
+                    aspectRatio: '9/16',
+                    objectFit: 'contain'
                   }}
                   src={movie.poster_path}
                   alt={movie.title}
@@ -82,23 +87,17 @@ function Carousel({movieList}) {
               disabled={activeStep === maxSteps - 1}
             >
               Next
-              {theme.direction === 'rtl' ? (
-                <KeyboardArrowLeft />
-              ) : (
-                <KeyboardArrowRight />
-              )}
+              <KeyboardArrowRight />
             </Button>
           }
           backButton={
             <Button size="small" onClick={handleBack} disabled={activeStep === 0}>
-              {theme.direction === 'rtl' ? (
-                <KeyboardArrowRight />
-              ) : (
-                <KeyboardArrowLeft />
-              )}
+              <KeyboardArrowLeft />
               Back
             </Button>
           }
+          sx={{background: 'transparent'}}
+          variant='dots'
         />
       </Box>
     );
@@ -106,7 +105,7 @@ function Carousel({movieList}) {
   else
   {
     return (
-      <>null</>
+      <></>
     );
   }
 }
