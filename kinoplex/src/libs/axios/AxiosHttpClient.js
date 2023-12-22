@@ -12,26 +12,22 @@ export class AxiosHttpClient {
 
   async get(path, header) {
 
-    try
-    {
+    try{
       const response = await this.axiosInstance.get(path, header);
       return response.data;
     }
-    catch (err)
-    {
+    catch (err){
       throw this.generateHttpError(err);
     }
   }
 
   async post(path, body, header) {
 
-    try
-    {
+    try{
       const response = await this.axiosInstance.post(path, body, header);
       return response.data;
     }
-    catch (err)
-    {
+    catch (err){
       throw this.generateHttpError(err);
     }
   }

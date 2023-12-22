@@ -10,8 +10,8 @@ import { selectLanguage } from '../store/features/languageSlice';
 
 export default function LanguageSelect() {
   const dispatch = useDispatch();
-  const theme = useSelector(state => state.theme);
-  const language = useSelector(state => state.language);
+  const themeStore = useSelector(state => state.theme);
+  const languageStore = useSelector(state => state.language);
 
   const handleChange = (event) => {
     dispatch(selectLanguage(event.target.value))
@@ -20,42 +20,44 @@ export default function LanguageSelect() {
   const StyledSelect = styled(Select)(() => ({
     '& .MuiSelect-select': {
       padding: "2px 6px",
-    },
-    '& .MuiSelect-outlined':{
-      color: theme.selectedTheme === "light"? "#FFFFFF" : "#000000"
+      backgroundColor: "#FFFFFF"
     }
   }));
 
   const StyledMenuItem = styled(MenuItem)(() => ({
-    backgroundColor: theme.selectedTheme === "light"? "#FFFFFF" : "#000000",
+    backgroundColor: "#FFFFFF",
   }));
 
   return (
     <FormControl sx={{ m: 1 }} >
       <StyledSelect
-        value={language.selectedLanguage}
+        value={languageStore.selectedLanguage}
         onChange={handleChange}
         displayEmpty
         inputProps={{ 'aria-label': 'Without label' }}
         sx={{
             "& .MuiSvgIcon-root": {
-              color: theme.selectedTheme === "light"? "#000000" : "#FFFFFF"
-            },
-            "& .MuiSelect-outlined":{
-              color: theme.selectedTheme === "light"? "#FFFFFF" : "#000000"
+              color: "#000000"
             }
+        }}
+        MenuProps={{
+          sx: {
+            "&& .Mui-selected": {
+              backgroundColor: "#FFFFFF"
+            }
+          }
         }}
         variant='outlined'
       >
         <StyledMenuItem value={"pt-BR"}>
-          <SelectText $light={theme.selectedTheme === "light"}>
-            {language.labels.portuguese}
+          <SelectText $light={themeStore.selectedTheme === "light"}>
+            {languageStore.labels.portuguese}
           </SelectText>
         </StyledMenuItem>
 
         <StyledMenuItem value={"en-US"}>
-          <SelectText $light={theme.selectedTheme === "light"}>
-            {language.labels.english}
+          <SelectText $light={themeStore.selectedTheme === "light"}>
+            {languageStore.labels.english}
           </SelectText>
         </StyledMenuItem>
 
@@ -65,7 +67,7 @@ export default function LanguageSelect() {
 }
 
 const SelectText =  styledComponent.span`
-  color: ${props => props.$light ? "#000000 !important" : "#FFFFFF !important"};
+  color: #000000;
   font-size: 12px;
   font-weight: 600;
 `;
